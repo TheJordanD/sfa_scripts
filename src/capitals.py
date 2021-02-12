@@ -1,7 +1,3 @@
-# setup a dictionary with states and capitals
-# get user input
-# print the value attached to the users input
-
 states = {'Texas': 'Austin',
           'Florida': 'Sacramento',
           'Georgia': 'Atlanta'}
