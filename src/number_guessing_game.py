@@ -3,9 +3,7 @@ import random
 
 def generate_random_numbers():
     numbers = random.sample(range(1, 10), 3)
-    print(numbers)
     print("I'm thinking of 3 numbers from 1 to 10. Guess one of them. ")
-
     return numbers
 
 
