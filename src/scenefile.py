@@ -1,3 +1,4 @@
+import pymel.core as pmc
 from pymel.core.system import Path
 
 
@@ -29,3 +30,11 @@ class SceneFile(object):
         self.ext = path.ext
         self.descriptor, self.task, ver = path.name.stripext().split("_")
         self.ver = int(ver.split("v")[-1])
+
+    def save(self):
+        """Saves the scene file
+
+        Returns:
+            Path: the path to the scene file if succesful
+        """
+        return pmc.system.saveAs(self.path)
