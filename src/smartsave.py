@@ -50,6 +50,7 @@ class SmartSaveUI(QtWidgets.QDialog):
         self.task_le = QtWidgets.QLineEdit("model")
         self.task_le.setFixedWidth(50)
         self.ver_sbx = QtWidgets.QSpinBox()
+        self.ver_sbx.setButtonSymbols(QtWidgets.QAbstractSpinBox.PlusMinus)
         self.ver_sbx.setFixedWidth(50)
         self.ver_sbx.setValue(1)
         self.ext_lbl = QtWidgets.QLabel(".ma")
