@@ -45,7 +45,18 @@ class SmartSaveUI(QtWidgets.QDialog):
         self.setLayout(self.main_lay)
 
     def create_connections(self):
+        """Connect Signals and Slots"""
         self.folder_browse_btn.clicked.connect(self._browse_folder)
+        self.save_btn.clicked.connect(self._save)
+
+    @QtCore.Slot()
+    def _save(self):
+        """Save the scene"""
+        self.scenefile.folder_path = self.folder_le.text()
+        self.scenefile.descriptor = self.descriptor_le.text()
+        self.scenefile.task = self.task_le.text()
+        self.scenefile.ver = self.ver_sbx.value()
+        self.scenefile.ext = self.ext_lbl.text()
 
     @QtCore.Slot()
     def _browse_folder(self):
