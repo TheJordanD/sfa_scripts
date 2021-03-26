@@ -57,6 +57,7 @@ class SmartSaveUI(QtWidgets.QDialog):
         self.scenefile.task = self.task_le.text()
         self.scenefile.ver = self.ver_sbx.value()
         self.scenefile.ext = self.ext_lbl.text()
+        self.scenefile.save()
 
     @QtCore.Slot()
     def _browse_folder(self):
@@ -121,7 +122,7 @@ class SmartSaveUI(QtWidgets.QDialog):
 class SceneFile(object):
     """An abstract represetnation of a Scene file"""
     def __init__(self, path=None):
-        self.folder_path = Path(cmds.workspace(query=True,
+        self._folder_path = Path(cmds.workspace(query=True,
                                                rootDirectory=True)) / "scenes"
         self.descriptor = 'main'
         self.task = 'model'
@@ -134,6 +135,14 @@ class SceneFile(object):
             log.info("Initialize with default properties")
             return
         self._init_from_path(path)
+
+    @property
+    def folder_path(self):
+        return self._folder_path
+
+    @folder_path.setter
+    def folder_path(self, val):
+        self._folder_path = Path(val)
 
     @property
     def filename(self):
