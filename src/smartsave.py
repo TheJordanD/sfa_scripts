@@ -125,7 +125,6 @@ class SmartSaveUI(QtWidgets.QDialog):
         default_folder = default_folder / "scenes"
         current_folder = Path(cmds.file(q=True, sn=True))
         _path, _scenename = os.path.split(current_folder)
-        self.folder_le = QtWidgets.QLineEdit(current_folder)
         if not pmc.system.sceneName():
             self.folder_le = QtWidgets.QLineEdit(default_folder)
         else:
