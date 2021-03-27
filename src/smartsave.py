@@ -6,6 +6,7 @@ import maya.OpenMayaUI as omui
 import maya.cmds as cmds
 import pymel.core as pmc
 from pymel.core.system import Path
+import os
 
 log = logging.getLogger(__name__)
 
@@ -122,7 +123,13 @@ class SmartSaveUI(QtWidgets.QDialog):
     def _create_folder_ui(self):
         default_folder = Path(cmds.workspace(rootDirectory=True, query=True))
         default_folder = default_folder / "scenes"
-        self.folder_le = QtWidgets.QLineEdit(default_folder)
+        current_folder = Path(cmds.file(q=True, sn=True))
+        _path, _scenename = os.path.split(current_folder)
+        self.folder_le = QtWidgets.QLineEdit(current_folder)
+        if not pmc.system.sceneName():
+            self.folder_le = QtWidgets.QLineEdit(default_folder)
+        else:
+            self.folder_le = QtWidgets.QLineEdit(_path)
         self.folder_browse_btn = QtWidgets.QPushButton("...")
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(self.folder_le)
