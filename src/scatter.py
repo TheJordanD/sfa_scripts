@@ -1,28 +1,26 @@
 import maya.cmds as cmds
 
 selection = cmds.ls(orderedSelection=True, flatten=True)
-vertexNames = cmds.filterExpand(selectionMask=31, expand=True,)
+vertex_names = cmds.filterExpand(selectionMask=31, expand=True)
 sourceObject = selection[0]
 
-
-def check_for_verts():
-    if vertexNames == None:
-        return False
-    else:
-        return True
-
-
-if check_for_verts() is False:
-    print("Scatter destination: " + selection[1])
+if vertex_names is None:
+    destinationObject = selection[1]
+    vertex_names = cmds.polyListComponentConversion(destinationObject, toVertex=True)
+    vertex_names = cmds.filterExpand(vertex_names, selectionMask=31)
+    print("Scatter destination: Verts on " + destinationObject)
 else:
     print("Scatter destination: Verts")
 
 
+def perform_scatter():
+    if cmds.objectType(sourceObject) == "transform":
+        for vert in vertex_names:
+            new_instance = cmds.instance(sourceObject)
+            position = cmds.pointPosition(vert, world=True)
+            cmds.xform(new_instance, translation=position)
+    else:
+        print("Please ensure the first object you select is a transfrom")
 
-#if cmds.objectType(sourceObject) == "transform":
-#    for vert in vertexNames:
-#        newInstance = cmds.instance(sourceObject)
-#        position = cmds.pointPosition(vert, world=True)
-#       cmds.xform(newInstance, translation=position)
-#else:
-#    print("Please ensure the first object you select is a transfrom")
+
+perform_scatter()
