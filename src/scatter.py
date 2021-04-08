@@ -1,6 +1,6 @@
 import maya.cmds as cmds
 
-selection = cmds.ls(os=True, fl=True)
+selection = cmds.ls(orderedSelection=True, flatten=True)
 
 vertexNames = cmds.filterExpand(selectionMask=31, expand=True, )
 
@@ -11,7 +11,7 @@ if cmds.objectType(objectToInstance) == "transform":
     for vert in vertexNames:
         newInstance = cmds.instance(objectToInstance)
 
-        position = cmds.pointPosition(vert, w=True)
+        position = cmds.pointPosition(vert, world=True)
 
         cmds.xform(newInstance, translation=position)
 
