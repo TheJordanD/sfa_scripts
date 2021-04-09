@@ -5,4 +5,4 @@ states = {'Texas': 'Austin',
 
 while True:
     user_input = input('Enter a state: ')
-    print(states.get(user_input, "Not a state"))
+    print(states.get(user_input, "Not on this list"))
