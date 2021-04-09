@@ -29,17 +29,22 @@ class ScatterUI(QtWidgets.QDialog):
         self.create_connections()
 
     def create_ui(self):
-        self.title_lbl = QtWidgets.QLabel("Smart Save")
+        self.title_lbl = QtWidgets.QLabel("Scatter Tool")
         self.title_lbl.setStyleSheet("font: bold 20px")
         self.selection_lay = self._create_selection_ui()
+        self.translation_lay = self._create_translation_ui()
+        self.scatter_btn = QtWidgets.QPushButton("Scatter")
         self.main_lay = QtWidgets.QVBoxLayout()
         self.main_lay.addWidget(self.title_lbl)
         self.main_lay.addLayout(self.selection_lay)
+        self.main_lay.addLayout(self.translation_lay)
+        self.main_lay.addWidget(self.scatter_btn)
         self.setLayout(self.main_lay)
 
     def create_connections(self):
         self.source_btn.clicked.connect(self._select_source)
         self.destination_btn.clicked.connect(self._select_destination)
+        self.scatter_btn.clicked.connect(self._perform_scatter)
 
     @QtCore.Slot()
     def _select_source(self):
@@ -54,6 +59,10 @@ class ScatterUI(QtWidgets.QDialog):
         else:
             self.destination_le.setText(str(self.scatterer.destination_object[0]))
 
+    @QtCore.Slot()
+    def _perform_scatter(self):
+        self.scatterer.perform_scatter()
+
     def _create_selection_ui(self):
         self.source_btn = QtWidgets.QPushButton("Select Source")
         self.source_le = QtWidgets.QLineEdit("")
@@ -65,6 +74,54 @@ class ScatterUI(QtWidgets.QDialog):
         layout.addStretch()
         layout.addWidget(self.destination_btn)
         layout.addWidget(self.destination_le)
+        return layout
+
+    def _create_scale_values_ui(self):
+        self.scale_min_lbl = QtWidgets.QLabel("Min")
+        self.scale_max_lbl = QtWidgets.QLabel("Max")
+        self.scale_x_lbl = QtWidgets.QLabel("X")
+        self.scale_y_lbl = QtWidgets.QLabel("Y")
+        self.scale_z_lbl = QtWidgets.QLabel("Z")
+        self.scale_x_min_le = QtWidgets.QLineEdit("x min")
+        self.scale_x_max_le = QtWidgets.QLineEdit("x max")
+        self.scale_y_min_le = QtWidgets.QLineEdit("y min")
+        self.scale_y_max_le = QtWidgets.QLineEdit("y max")
+        self.scale_z_min_le = QtWidgets.QLineEdit("z min")
+        self.scale_z_max_le = QtWidgets.QLineEdit("z max")
+        layout = QtWidgets.QGridLayout()
+        layout.addWidget(self.scale_min_lbl, 0, 1)
+        layout.addWidget(self.scale_max_lbl, 0, 2)
+        layout.addWidget(self.scale_x_lbl, 1, 0)
+        layout.addWidget(self.scale_y_lbl, 2, 0)
+        layout.addWidget(self.scale_z_lbl, 3, 0)
+        layout.addWidget(self.scale_x_min_le, 1, 1)
+        layout.addWidget(self.scale_x_max_le, 1, 2)
+        layout.addWidget(self.scale_y_min_le, 2, 1)
+        layout.addWidget(self.scale_y_max_le, 2, 2)
+        layout.addWidget(self.scale_z_min_le, 3, 1)
+        layout.addWidget(self.scale_z_max_le, 3, 2)
+        return layout
+
+    def _create_scale_ui(self):
+        self.scale_lbl = QtWidgets.QLabel("Scale")
+        self.scale_lbl.setStyleSheet("font: bold 12px")
+        self.scale_values_lay = self._create_scale_values_ui()
+
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(self.scale_lbl)
+        layout.addLayout(self.scale_values_lay)
+        return layout
+
+    def _create_rot_ui(self):
+        pass
+
+    def _create_translation_ui(self):
+        self.scale_lay = self._create_scale_ui()
+        #self.rot_lay = self._create_rot_ui
+
+        layout = QtWidgets.QHBoxLayout()
+        layout.addLayout(self.scale_lay)
+        #layout.addLayout(self.rot_lay)
         return layout
 
 
