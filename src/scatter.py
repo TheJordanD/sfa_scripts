@@ -72,7 +72,8 @@ class ScatterUI(QtWidgets.QDialog):
         if self.scatterer.destination_object is None:
             self.destination_lbl.setText("vertices")
         else:
-            self.destination_lbl.setText(str(self.scatterer.destination_object[0]))
+            self.destination_lbl.setText(
+                str(self.scatterer.destination_object[0]))
 
     @QtCore.Slot()
     def _perform_scatter(self):
