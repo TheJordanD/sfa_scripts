@@ -46,6 +46,22 @@ class ScatterUI(QtWidgets.QDialog):
         self.destination_btn.clicked.connect(self._select_destination)
         self.scatter_btn.clicked.connect(self._perform_scatter)
 
+    def _set_scatterer_properties_from_ui(self):
+        self.scatterer.scale_x_min = float(self.scale_x_min_le.text())
+        self.scatterer.scale_x_max = float(self.scale_x_max_le.text())
+        self.scatterer.scale_y_min = float(self.scale_y_min_le.text())
+        self.scatterer.scale_y_max = float(self.scale_y_max_le.text())
+        self.scatterer.scale_z_min = float(self.scale_z_min_le.text())
+        self.scatterer.scale_z_max = float(self.scale_z_max_le.text())
+
+        self.scatterer.rot_x_min = float(self.rot_x_min_le.text())
+        self.scatterer.rot_x_max = float(self.rot_x_max_le.text())
+        self.scatterer.rot_y_min = float(self.rot_y_min_le.text())
+        self.scatterer.rot_y_max = float(self.rot_y_max_le.text())
+        self.scatterer.rot_z_min = float(self.rot_z_min_le.text())
+        self.scatterer.rot_z_max = float(self.rot_z_max_le.text())
+
+
     @QtCore.Slot()
     def _select_source(self):
         self.scatterer.select_source()
@@ -61,6 +77,7 @@ class ScatterUI(QtWidgets.QDialog):
 
     @QtCore.Slot()
     def _perform_scatter(self):
+        self._set_scatterer_properties_from_ui()
         self.scatterer.perform_scatter()
 
     def _create_selection_ui(self):
@@ -82,12 +99,12 @@ class ScatterUI(QtWidgets.QDialog):
         self.scale_x_lbl = QtWidgets.QLabel("X")
         self.scale_y_lbl = QtWidgets.QLabel("Y")
         self.scale_z_lbl = QtWidgets.QLabel("Z")
-        self.scale_x_min_le = QtWidgets.QLineEdit("x min")
-        self.scale_x_max_le = QtWidgets.QLineEdit("x max")
-        self.scale_y_min_le = QtWidgets.QLineEdit("y min")
-        self.scale_y_max_le = QtWidgets.QLineEdit("y max")
-        self.scale_z_min_le = QtWidgets.QLineEdit("z min")
-        self.scale_z_max_le = QtWidgets.QLineEdit("z max")
+        self.scale_x_min_le = QtWidgets.QLineEdit("1")
+        self.scale_x_max_le = QtWidgets.QLineEdit("1")
+        self.scale_y_min_le = QtWidgets.QLineEdit("1")
+        self.scale_y_max_le = QtWidgets.QLineEdit("1")
+        self.scale_z_min_le = QtWidgets.QLineEdit("1")
+        self.scale_z_max_le = QtWidgets.QLineEdit("1")
         layout = QtWidgets.QGridLayout()
         layout.addWidget(self.scale_min_lbl, 0, 1)
         layout.addWidget(self.scale_max_lbl, 0, 2)
@@ -108,12 +125,12 @@ class ScatterUI(QtWidgets.QDialog):
         self.rot_x_lbl = QtWidgets.QLabel("X")
         self.rot_y_lbl = QtWidgets.QLabel("Y")
         self.rot_z_lbl = QtWidgets.QLabel("Z")
-        self.rot_x_min_le = QtWidgets.QLineEdit("x min")
-        self.rot_x_max_le = QtWidgets.QLineEdit("x max")
-        self.rot_y_min_le = QtWidgets.QLineEdit("y min")
-        self.rot_y_max_le = QtWidgets.QLineEdit("y max")
-        self.rot_z_min_le = QtWidgets.QLineEdit("z min")
-        self.rot_z_max_le = QtWidgets.QLineEdit("z max")
+        self.rot_x_min_le = QtWidgets.QLineEdit("0")
+        self.rot_x_max_le = QtWidgets.QLineEdit("0")
+        self.rot_y_min_le = QtWidgets.QLineEdit("0")
+        self.rot_y_max_le = QtWidgets.QLineEdit("0")
+        self.rot_z_min_le = QtWidgets.QLineEdit("0")
+        self.rot_z_max_le = QtWidgets.QLineEdit("0")
         layout = QtWidgets.QGridLayout()
         layout.addWidget(self.rot_min_lbl, 0, 1)
         layout.addWidget(self.rot_max_lbl, 0, 2)
@@ -180,16 +197,16 @@ class Scatterer(object):
         self.rot_y_max = 0
         self.rot_z = 0
         self.rot_z_min = 0
-        self.rot_z_max = 40
+        self.rot_z_max = 0
 
     def randomize(self):
-        self.scale_x = round(rand.uniform(self.scale_x_min, self.scale_x_max), 2)
-        self.scale_y = round(rand.uniform(self.scale_y_min, self.scale_y_max), 2)
-        self.scale_z = round(rand.uniform(self.scale_z_min, self.scale_z_max), 2)
+        self.scale_x = rand.uniform(self.scale_x_min, self.scale_x_max)
+        self.scale_y = rand.uniform(self.scale_y_min, self.scale_y_max)
+        self.scale_z = rand.uniform(self.scale_z_min, self.scale_z_max)
 
-        self.rot_x = round(rand.uniform(self.rot_x_min, self.rot_x_max), 2)
-        self.rot_y = round(rand.uniform(self.rot_y_min, self.rot_y_max), 2)
-        self.rot_z = round(rand.uniform(self.rot_z_min, self.rot_z_max), 2)
+        self.rot_x = rand.uniform(self.rot_x_min, self.rot_x_max)
+        self.rot_y = rand.uniform(self.rot_y_min, self.rot_y_max)
+        self.rot_z = rand.uniform(self.rot_z_min, self.rot_z_max)
 
     def select_source(self):
         selection = cmds.ls(orderedSelection=True, flatten=True)
