@@ -38,7 +38,21 @@ class ScatterUI(QtWidgets.QDialog):
         self.setLayout(self.main_lay)
 
     def create_connections(self):
-        pass
+        self.source_btn.clicked.connect(self._select_source)
+        self.destination_btn.clicked.connect(self._select_destination)
+
+    @QtCore.Slot()
+    def _select_source(self):
+        self.scatterer.select_source()
+        self.source_le.setText(str(self.scatterer.source_object[0]))
+
+    @QtCore.Slot()
+    def _select_destination(self):
+        self.scatterer.select_destination()
+        if self.scatterer.destination_object is None:
+            self.destination_le.setText("vertices")
+        else:
+            self.destination_le.setText(str(self.scatterer.destination_object[0]))
 
     def _create_selection_ui(self):
         self.source_btn = QtWidgets.QPushButton("Select Source")
@@ -90,11 +104,13 @@ class Scatterer(object):
         selection = cmds.ls(orderedSelection=True, flatten=True)
         if len(selection) == 1 and cmds.objectType(selection) == "transform":
             self.source_object = selection
+            # self.source_object = self.source_object[0]
             log.info("Source object is now: " + str(selection))
         else:
             log.critical("Select a single transform object")
 
     def select_destination(self):
+        self.destination_object = None
         selection = cmds.ls(orderedSelection=True, flatten=True)
 
         all_verts = True
