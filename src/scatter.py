@@ -26,14 +26,32 @@ class ScatterUI(QtWidgets.QDialog):
                             QtCore.Qt.WindowContextHelpButtonHint)
         self.scatterer = Scatterer()
         self.create_ui()
-        # self.create_connections()
+        self.create_connections()
 
     def create_ui(self):
         self.title_lbl = QtWidgets.QLabel("Smart Save")
         self.title_lbl.setStyleSheet("font: bold 20px")
+        self.selection_lay = self._create_selection_ui()
         self.main_lay = QtWidgets.QVBoxLayout()
         self.main_lay.addWidget(self.title_lbl)
+        self.main_lay.addLayout(self.selection_lay)
         self.setLayout(self.main_lay)
+
+    def create_connections(self):
+        pass
+
+    def _create_selection_ui(self):
+        self.source_btn = QtWidgets.QPushButton("Select Source")
+        self.source_le = QtWidgets.QLineEdit("")
+        self.destination_btn = QtWidgets.QPushButton("Select Destination")
+        self.destination_le = QtWidgets.QLineEdit("")
+        layout = QtWidgets.QHBoxLayout()
+        layout.addWidget(self.source_btn)
+        layout.addWidget(self.source_le)
+        layout.addStretch()
+        layout.addWidget(self.destination_btn)
+        layout.addWidget(self.destination_le)
+        return layout
 
 
 class Scatterer(object):
