@@ -21,7 +21,7 @@ class ScatterUI(QtWidgets.QDialog):
         super(ScatterUI, self).__init__(parent=maya_main_window())
         self.setWindowTitle("Scatter Tool")
         self.setMinimumWidth(500)
-        self.setMaximumHeight(200)
+        self.setMaximumHeight(500)
         self.setWindowFlags(self.windowFlags() ^
                             QtCore.Qt.WindowContextHelpButtonHint)
         self.scatterer = Scatterer()
@@ -102,6 +102,32 @@ class ScatterUI(QtWidgets.QDialog):
         layout.addWidget(self.scale_z_max_le, 3, 2)
         return layout
 
+    def _create_rot_values_ui(self):
+        self.rot_min_lbl = QtWidgets.QLabel("Min")
+        self.rot_max_lbl = QtWidgets.QLabel("Max")
+        self.rot_x_lbl = QtWidgets.QLabel("X")
+        self.rot_y_lbl = QtWidgets.QLabel("Y")
+        self.rot_z_lbl = QtWidgets.QLabel("Z")
+        self.rot_x_min_le = QtWidgets.QLineEdit("x min")
+        self.rot_x_max_le = QtWidgets.QLineEdit("x max")
+        self.rot_y_min_le = QtWidgets.QLineEdit("y min")
+        self.rot_y_max_le = QtWidgets.QLineEdit("y max")
+        self.rot_z_min_le = QtWidgets.QLineEdit("z min")
+        self.rot_z_max_le = QtWidgets.QLineEdit("z max")
+        layout = QtWidgets.QGridLayout()
+        layout.addWidget(self.rot_min_lbl, 0, 1)
+        layout.addWidget(self.rot_max_lbl, 0, 2)
+        layout.addWidget(self.rot_x_lbl, 1, 0)
+        layout.addWidget(self.rot_y_lbl, 2, 0)
+        layout.addWidget(self.rot_z_lbl, 3, 0)
+        layout.addWidget(self.rot_x_min_le, 1, 1)
+        layout.addWidget(self.rot_x_max_le, 1, 2)
+        layout.addWidget(self.rot_y_min_le, 2, 1)
+        layout.addWidget(self.rot_y_max_le, 2, 2)
+        layout.addWidget(self.rot_z_min_le, 3, 1)
+        layout.addWidget(self.rot_z_max_le, 3, 2)
+        return layout
+
     def _create_scale_ui(self):
         self.scale_lbl = QtWidgets.QLabel("Scale")
         self.scale_lbl.setStyleSheet("font: bold 12px")
@@ -113,15 +139,23 @@ class ScatterUI(QtWidgets.QDialog):
         return layout
 
     def _create_rot_ui(self):
-        pass
+        self.rot_lbl = QtWidgets.QLabel("Rotation")
+        self.rot_lbl.setStyleSheet("font: bold 12px")
+        self.rot_values_lay = self._create_rot_values_ui()
+
+        layout = QtWidgets.QVBoxLayout()
+        layout.addWidget(self.rot_lbl)
+        layout.addLayout(self.rot_values_lay)
+        return layout
 
     def _create_translation_ui(self):
         self.scale_lay = self._create_scale_ui()
-        #self.rot_lay = self._create_rot_ui
+        self.rot_lay = self._create_rot_ui()
 
         layout = QtWidgets.QHBoxLayout()
         layout.addLayout(self.scale_lay)
-        #layout.addLayout(self.rot_lay)
+        layout.addStretch()
+        layout.addLayout(self.rot_lay)
         return layout
 
 
