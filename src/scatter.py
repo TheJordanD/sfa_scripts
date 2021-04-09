@@ -1,9 +1,39 @@
 import logging
 
+from PySide2 import QtWidgets, QtCore
+from shiboken2 import wrapInstance
+import maya.OpenMayaUI as omui
 import maya.cmds as cmds
 import random as rand
 
 log = logging.getLogger(__name__)
+
+
+def maya_main_window():
+    """Return the maya main window widget"""
+    main_window = omui.MQtUtil.mainWindow()
+    return wrapInstance(long(main_window), QtWidgets.QWidget)
+
+
+class ScatterUI(QtWidgets.QDialog):
+
+    def __init__(self):
+        super(ScatterUI, self).__init__(parent=maya_main_window())
+        self.setWindowTitle("Scatter Tool")
+        self.setMinimumWidth(500)
+        self.setMaximumHeight(200)
+        self.setWindowFlags(self.windowFlags() ^
+                            QtCore.Qt.WindowContextHelpButtonHint)
+        self.scatterer = Scatterer()
+        self.create_ui()
+        # self.create_connections()
+
+    def create_ui(self):
+        self.title_lbl = QtWidgets.QLabel("Smart Save")
+        self.title_lbl.setStyleSheet("font: bold 20px")
+        self.main_lay = QtWidgets.QVBoxLayout()
+        self.main_lay.addWidget(self.title_lbl)
+        self.setLayout(self.main_lay)
 
 
 class Scatterer(object):
@@ -37,7 +67,6 @@ class Scatterer(object):
         self.rot_x = round(rand.uniform(self.rot_x_min, self.rot_x_max), 2)
         self.rot_y = round(rand.uniform(self.rot_y_min, self.rot_y_max), 2)
         self.rot_z = round(rand.uniform(self.rot_z_min, self.rot_z_max), 2)
-
 
     def select_source(self):
         selection = cmds.ls(orderedSelection=True, flatten=True)
@@ -76,7 +105,6 @@ class Scatterer(object):
     def perform_scatter(self):
         for vert in self.destination_verts:
             self.randomize()
-            print(self.rot_z)
             new_instance = cmds.instance(self.source_object)
             position = cmds.pointPosition(vert, world=True)
             cmds.xform(new_instance, translation=position,
