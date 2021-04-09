@@ -20,8 +20,8 @@ class Scatterer(object):
 
     def select_destination(self):
         selection = cmds.ls(orderedSelection=True, flatten=True)
-        all_verts = True
 
+        all_verts = True
         for _item in selection:
             if ".vtx" not in _item:
                 all_verts = False
@@ -29,18 +29,19 @@ class Scatterer(object):
         if len(selection) is 0:
             log.critical("Select a single object or multiple vertices")
         elif len(selection) == 1 and cmds.objectType(selection) == "transform":
-            destination_object = selection
+            self.destination_object = selection
+            self.destination_verts = selection
             log.info("Destination object is now: " + str(selection))
             self.destination_verts = cmds.polyListComponentConversion(
-                destination_object,
+                self.destination_object,
                 toVertex=True)
             self.destination_verts = cmds.filterExpand(self.destination_verts,
                                                   selectionMask=31)
         elif all_verts is True:
-            destination_verts = selection
-            log.info("Destination verts are now: " + str(destination_verts))
+            self.destination_verts = selection
+            log.info("Destination verts are now: " + str(self.destination_verts))
         else:
-            log.critical("Select a single object or multiple vertices")
+            log.critical("else: Select a single object or multiple vertices")
 
     def perform_scatter(self):
         for vert in self.destination_verts:
