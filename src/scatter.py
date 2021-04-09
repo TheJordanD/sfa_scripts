@@ -10,7 +10,6 @@ log = logging.getLogger(__name__)
 
 
 def maya_main_window():
-    """Return the maya main window widget"""
     main_window = omui.MQtUtil.mainWindow()
     return wrapInstance(long(main_window), QtWidgets.QWidget)
 
@@ -65,15 +64,15 @@ class ScatterUI(QtWidgets.QDialog):
     @QtCore.Slot()
     def _select_source(self):
         self.scatterer.select_source()
-        self.source_le.setText(str(self.scatterer.source_object[0]))
+        self.source_lbl.setText(str(self.scatterer.source_object[0]))
 
     @QtCore.Slot()
     def _select_destination(self):
         self.scatterer.select_destination()
         if self.scatterer.destination_object is None:
-            self.destination_le.setText("vertices")
+            self.destination_lbl.setText("vertices")
         else:
-            self.destination_le.setText(str(self.scatterer.destination_object[0]))
+            self.destination_lbl.setText(str(self.scatterer.destination_object[0]))
 
     @QtCore.Slot()
     def _perform_scatter(self):
@@ -82,15 +81,17 @@ class ScatterUI(QtWidgets.QDialog):
 
     def _create_selection_ui(self):
         self.source_btn = QtWidgets.QPushButton("Select Source")
-        self.source_le = QtWidgets.QLineEdit("")
+        self.source_lbl = QtWidgets.QLabel("")
+        self.source_lbl.setMinimumWidth(50)
         self.destination_btn = QtWidgets.QPushButton("Select Destination")
-        self.destination_le = QtWidgets.QLineEdit("")
+        self.destination_lbl = QtWidgets.QLabel("")
+        self.destination_lbl.setMinimumWidth(50)
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(self.source_btn)
-        layout.addWidget(self.source_le)
+        layout.addWidget(self.source_lbl)
         layout.addStretch()
         layout.addWidget(self.destination_btn)
-        layout.addWidget(self.destination_le)
+        layout.addWidget(self.destination_lbl)
         return layout
 
     def _create_scale_values_ui(self):
