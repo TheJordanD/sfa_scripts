@@ -201,6 +201,8 @@ class Scatterer(object):
         self.rot_z_min = 0
         self.rot_z_max = 0
 
+        self.random_percentage = 0.1
+
     def randomize(self):
         self.scale_x = rand.uniform(self.scale_x_min, self.scale_x_max)
         self.scale_y = rand.uniform(self.scale_y_min, self.scale_y_max)
@@ -247,7 +249,14 @@ class Scatterer(object):
             log.critical("else: Select a single object or multiple vertices")
 
     def perform_scatter(self):
-        for vert in self.destination_verts:
+        percentage_destination = []
+        for idx in range(0, len(self.destination_verts)):
+            rand.seed(idx)
+            rand_value = rand.random()
+            if rand_value <= self.random_percentage:
+                percentage_destination.append(self.destination_verts[idx])
+
+        for vert in percentage_destination:
             self.randomize()
             new_instance = cmds.instance(self.source_object)
             position = cmds.pointPosition(vert, world=True)
