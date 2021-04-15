@@ -1,6 +1,6 @@
 import logging
 
-from PySide2 import QtWidgets, QtCore
+from PySide2 import QtWidgets, QtCore, QtGui
 from shiboken2 import wrapInstance
 import maya.OpenMayaUI as omui
 import maya.cmds as cmds
@@ -31,11 +31,13 @@ class ScatterUI(QtWidgets.QDialog):
         self.title_lbl = QtWidgets.QLabel("Scatter Tool")
         self.title_lbl.setStyleSheet("font: bold 20px")
         self.selection_lay = self._create_selection_ui()
+        self.percentage_lay = self._create_percentage_ui()
         self.translation_lay = self._create_translation_ui()
         self.scatter_btn = QtWidgets.QPushButton("Scatter")
         self.main_lay = QtWidgets.QVBoxLayout()
         self.main_lay.addWidget(self.title_lbl)
         self.main_lay.addLayout(self.selection_lay)
+        self.main_lay.addLayout(self.percentage_lay)
         self.main_lay.addLayout(self.translation_lay)
         self.main_lay.addWidget(self.scatter_btn)
         self.setLayout(self.main_lay)
@@ -59,6 +61,8 @@ class ScatterUI(QtWidgets.QDialog):
         self.scatterer.rot_y_max = float(self.rot_y_max_le.text())
         self.scatterer.rot_z_min = float(self.rot_z_min_le.text())
         self.scatterer.rot_z_max = float(self.rot_z_max_le.text())
+
+        self.scatterer.percentage = float(self.percentage_le.text()) / 100
 
 
     @QtCore.Slot()
@@ -93,6 +97,16 @@ class ScatterUI(QtWidgets.QDialog):
         layout.addStretch()
         layout.addWidget(self.destination_btn)
         layout.addWidget(self.destination_lbl)
+        return layout
+
+    def _create_percentage_ui(self):
+        self.percentage_lbl = QtWidgets.QLabel("Percentage:")
+        self.percentage_le = QtWidgets.QLineEdit("100")
+        only_double = QtGui.QDoubleValidator()
+        self.percentage_le.setValidator(only_double)
+        layout = QtWidgets.QHBoxLayout()
+        layout.addWidget(self.percentage_lbl)
+        layout.addWidget(self.percentage_le)
         return layout
 
     def _create_scale_values_ui(self):
@@ -201,7 +215,7 @@ class Scatterer(object):
         self.rot_z_min = 0
         self.rot_z_max = 0
 
-        self.random_percentage = 0.1
+        self.percentage = 0.5
 
     def randomize(self):
         self.scale_x = rand.uniform(self.scale_x_min, self.scale_x_max)
@@ -253,7 +267,7 @@ class Scatterer(object):
         for idx in range(0, len(self.destination_verts)):
             rand.seed(idx)
             rand_value = rand.random()
-            if rand_value <= self.random_percentage:
+            if rand_value <= self.percentage:
                 percentage_destination.append(self.destination_verts[idx])
 
         for vert in percentage_destination:
