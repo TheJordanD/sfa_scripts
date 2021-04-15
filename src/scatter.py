@@ -215,7 +215,7 @@ class Scatterer(object):
         self.rot_z_min = 0
         self.rot_z_max = 0
 
-        self.percentage = 0.5
+        self.percentage = 1
 
     def randomize(self):
         self.scale_x = rand.uniform(self.scale_x_min, self.scale_x_max)
