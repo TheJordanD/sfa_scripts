@@ -195,6 +195,8 @@ class ScatterUI(QtWidgets.QDialog):
 class Scatterer(object):
 
     def __init__(self):
+        self.align_to_normal = True
+
         self.scale_x = 1
         self.scale_x_min = 1
         self.scale_x_max = 1
@@ -274,6 +276,12 @@ class Scatterer(object):
             self.randomize()
             new_instance = cmds.instance(self.source_object)
             position = cmds.pointPosition(vert, world=True)
-            cmds.xform(new_instance, translation=position,
-                       scale=(self.scale_x, self.scale_y, self.scale_z),
-                       rotation=(self.rot_x, self.rot_y, self.rot_z))
+            cmds.xform(new_instance, translation=position)
+
+            if self.align_to_normal:
+                constraint = cmds.normalConstraint(vert, new_instance, aimVector=[0, 1, 0])
+                cmds.delete(constraint)
+
+            cmds.xform(new_instance, objectSpace=True, relative=True,
+                       rotation=(self.rot_x, self.rot_y, self.rot_z),
+                       scale=(self.scale_x, self.scale_y, self.scale_z))
