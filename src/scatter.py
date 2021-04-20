@@ -31,13 +31,13 @@ class ScatterUI(QtWidgets.QDialog):
         self.title_lbl = QtWidgets.QLabel("Scatter Tool")
         self.title_lbl.setStyleSheet("font: bold 20px")
         self.selection_lay = self._create_selection_ui()
-        self.percentage_lay = self._create_percentage_ui()
+        self.settings_lay = self._create_settings_ui()
         self.translation_lay = self._create_translation_ui()
         self.scatter_btn = QtWidgets.QPushButton("Scatter")
         self.main_lay = QtWidgets.QVBoxLayout()
         self.main_lay.addWidget(self.title_lbl)
         self.main_lay.addLayout(self.selection_lay)
-        self.main_lay.addLayout(self.percentage_lay)
+        self.main_lay.addLayout(self.settings_lay)
         self.main_lay.addLayout(self.translation_lay)
         self.main_lay.addWidget(self.scatter_btn)
         self.setLayout(self.main_lay)
@@ -61,6 +61,8 @@ class ScatterUI(QtWidgets.QDialog):
         self.scatterer.rot_y_max = float(self.rot_y_max_le.text())
         self.scatterer.rot_z_min = float(self.rot_z_min_le.text())
         self.scatterer.rot_z_max = float(self.rot_z_max_le.text())
+
+        self.scatterer.align_to_normal = self.align_to_normals_chbx.isChecked()
 
         self.scatterer.percentage = float(self.percentage_le.text()) / 100
 
@@ -99,12 +101,17 @@ class ScatterUI(QtWidgets.QDialog):
         layout.addWidget(self.destination_lbl)
         return layout
 
-    def _create_percentage_ui(self):
+    def _create_settings_ui(self):
+        self.align_to_normals_chbx = QtWidgets.QCheckBox()
+        self.align_to_normals_lbl = QtWidgets.QLabel("Align to normals")
         self.percentage_lbl = QtWidgets.QLabel("Percentage:")
         self.percentage_le = QtWidgets.QLineEdit("100")
         only_double = QtGui.QDoubleValidator()
         self.percentage_le.setValidator(only_double)
         layout = QtWidgets.QHBoxLayout()
+        layout.addWidget(self.align_to_normals_chbx)
+        layout.addWidget(self.align_to_normals_lbl)
+        layout.addStretch()
         layout.addWidget(self.percentage_lbl)
         layout.addWidget(self.percentage_le)
         return layout
@@ -195,7 +202,7 @@ class ScatterUI(QtWidgets.QDialog):
 class Scatterer(object):
 
     def __init__(self):
-        self.align_to_normal = True
+        self.align_to_normal = False
 
         self.scale_x = 1
         self.scale_x_min = 1
@@ -232,7 +239,6 @@ class Scatterer(object):
         selection = cmds.ls(orderedSelection=True, flatten=True)
         if len(selection) == 1 and cmds.objectType(selection) == "transform":
             self.source_object = selection
-            # self.source_object = self.source_object[0]
             log.info("Source object is now: " + str(selection))
         else:
             log.critical("Select a single transform object")
