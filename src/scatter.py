@@ -33,19 +33,24 @@ class ScatterUI(QtWidgets.QDialog):
         self.selection_lay = self._create_selection_ui()
         self.settings_lay = self._create_settings_ui()
         self.translation_lay = self._create_translation_ui()
+        self.deletion_lay = self._create_deletion_ui()
         self.scatter_btn = QtWidgets.QPushButton("Scatter")
+        self.scatter_btn.setStyleSheet("background-color: rgb(100,120,100)")
         self.main_lay = QtWidgets.QVBoxLayout()
         self.main_lay.addWidget(self.title_lbl)
         self.main_lay.addLayout(self.selection_lay)
         self.main_lay.addLayout(self.settings_lay)
         self.main_lay.addLayout(self.translation_lay)
         self.main_lay.addStretch()
+        self.main_lay.addLayout(self.deletion_lay)
         self.main_lay.addWidget(self.scatter_btn)
         self.setLayout(self.main_lay)
 
     def create_connections(self):
         self.source_btn.clicked.connect(self._select_source)
         self.destination_btn.clicked.connect(self._select_destination)
+        self.delete_previous_btn.clicked.connect(self._delete_previous)
+        self.delete_all_btn.clicked.connect(self._delete_all)
         self.scatter_btn.clicked.connect(self._perform_scatter)
 
     def _set_scatterer_properties_from_ui(self):
@@ -81,6 +86,14 @@ class ScatterUI(QtWidgets.QDialog):
         else:
             self.destination_lbl.setText(
                 str(self.scatterer.destination_object[0]))
+
+    @QtCore.Slot()
+    def _delete_previous(self):
+        self.scatterer.delete_previous()
+
+    @QtCore.Slot()
+    def _delete_all(self):
+        self.scatterer.delete_all()
 
     @QtCore.Slot()
     def _perform_scatter(self):
@@ -203,6 +216,16 @@ class ScatterUI(QtWidgets.QDialog):
         layout.addLayout(self.scale_lay)
         layout.addSpacing(10)
         layout.addLayout(self.rot_lay)
+        return layout
+
+    def _create_deletion_ui(self):
+        self.delete_previous_btn = QtWidgets.QPushButton("Delete previous")
+        self.delete_all_btn = QtWidgets.QPushButton("Delete all")
+        self.delete_all_btn.setStyleSheet("background-color: rgb(120,100,100)")
+
+        layout = QtWidgets.QHBoxLayout()
+        layout.addWidget(self.delete_previous_btn)
+        layout.addWidget(self.delete_all_btn)
         return layout
 
 
@@ -338,3 +361,4 @@ class Scatterer(object):
         for inst in instances:
             if search in inst:
                 cmds.delete(inst)
+        self.count = self.count - 1
