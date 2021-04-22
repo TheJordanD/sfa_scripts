@@ -211,6 +211,8 @@ class Scatterer(object):
     def __init__(self):
         self.align_to_normal = False
         self.clump_amount = .5
+        self.percentage = 1
+        self.count = 0
 
         self.scale_x = 1
         self.scale_x_min = 1
@@ -231,8 +233,6 @@ class Scatterer(object):
         self.rot_z = 0
         self.rot_z_min = 0
         self.rot_z_max = 0
-
-        self.percentage = 1
 
     def randomize(self):
         self.scale_x = rand.uniform(self.scale_x_min, self.scale_x_max)
@@ -279,6 +279,7 @@ class Scatterer(object):
             log.critical("else: Select a single object or multiple vertices")
 
     def perform_scatter(self):
+        self.count = self.count +1
         instances = []
         pos_list = []
         percentage_destination = []
@@ -290,7 +291,10 @@ class Scatterer(object):
 
         for vert in percentage_destination:
             self.randomize()
-            new_instance = cmds.instance(self.source_object)
+            new_instance = cmds.instance(self.source_object,
+                                         name=(str(self.source_object[0]) +
+                                               "_instance" +
+                                               str(self.count) + "_"))
             position = cmds.pointPosition(vert, world=True)
             cmds.xform(new_instance, translation=position)
 
@@ -322,3 +326,15 @@ class Scatterer(object):
             cmds.xform(instances[idx], objectSpace=True, relative=True,
                        translation=(dist_x, dist_y, dist_z))
             idx = idx + 1
+
+    def delete_all(self):
+        instances = cmds.ls("*instance*")
+        for inst in instances:
+            cmds.delete(inst)
+
+    def delete_previous(self):
+        instances = cmds.ls("*instance*")
+        search = "instance" + str(self.count)
+        for inst in instances:
+            if search in inst:
+                cmds.delete(inst)
