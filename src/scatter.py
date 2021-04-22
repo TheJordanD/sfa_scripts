@@ -39,6 +39,7 @@ class ScatterUI(QtWidgets.QDialog):
         self.main_lay.addLayout(self.selection_lay)
         self.main_lay.addLayout(self.settings_lay)
         self.main_lay.addLayout(self.translation_lay)
+        self.main_lay.addStretch()
         self.main_lay.addWidget(self.scatter_btn)
         self.setLayout(self.main_lay)
 
@@ -97,7 +98,7 @@ class ScatterUI(QtWidgets.QDialog):
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(self.source_btn)
         layout.addWidget(self.source_lbl)
-        layout.addStretch()
+        layout.addSpacing(30)
         layout.addWidget(self.destination_btn)
         layout.addWidget(self.destination_lbl)
         return layout
@@ -112,7 +113,7 @@ class ScatterUI(QtWidgets.QDialog):
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(self.align_to_normals_chbx)
         layout.addWidget(self.align_to_normals_lbl)
-        layout.addStretch()
+        layout.addSpacing(30)
         layout.addWidget(self.percentage_lbl)
         layout.addWidget(self.percentage_le)
         return layout
@@ -195,7 +196,7 @@ class ScatterUI(QtWidgets.QDialog):
 
         layout = QtWidgets.QHBoxLayout()
         layout.addLayout(self.scale_lay)
-        layout.addStretch()
+        layout.addSpacing(10)
         layout.addLayout(self.rot_lay)
         return layout
 
