@@ -64,7 +64,7 @@ class ScatterUI(QtWidgets.QDialog):
         self.scatterer.rot_z_max = float(self.rot_z_max_le.text())
 
         self.scatterer.align_to_normal = self.align_to_normals_chbx.isChecked()
-
+        self.scatterer.clump_amount = float(self.clump_amount_le.text()) / 100
         self.scatterer.percentage = float(self.percentage_le.text()) / 100
 
 
@@ -103,15 +103,21 @@ class ScatterUI(QtWidgets.QDialog):
         return layout
 
     def _create_settings_ui(self):
+        only_double = QtGui.QDoubleValidator()
         self.align_to_normals_chbx = QtWidgets.QCheckBox()
         self.align_to_normals_lbl = QtWidgets.QLabel("Align to normals")
+        self.clump_amount_lbl = QtWidgets.QLabel("Clump amount:")
+        self.clump_amount_le = QtWidgets.QLineEdit("0")
+        self.clump_amount_le.setValidator(only_double)
         self.percentage_lbl = QtWidgets.QLabel("Percentage:")
         self.percentage_le = QtWidgets.QLineEdit("100")
-        only_double = QtGui.QDoubleValidator()
         self.percentage_le.setValidator(only_double)
         layout = QtWidgets.QHBoxLayout()
         layout.addWidget(self.align_to_normals_chbx)
         layout.addWidget(self.align_to_normals_lbl)
+        layout.addSpacing(30)
+        layout.addWidget(self.clump_amount_lbl)
+        layout.addWidget(self.clump_amount_le)
         layout.addSpacing(30)
         layout.addWidget(self.percentage_lbl)
         layout.addWidget(self.percentage_le)
