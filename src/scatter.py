@@ -204,6 +204,7 @@ class Scatterer(object):
 
     def __init__(self):
         self.align_to_normal = False
+        self.clump_amount = .5
 
         self.scale_x = 1
         self.scale_x_min = 1
@@ -309,9 +310,9 @@ class Scatterer(object):
         idx = 0
         for pos in pos_list:
             print(pos[0])
-            dist_x = (center[0] - pos[0]) / 2
-            dist_y = (center[1] - pos[1]) / 2
-            dist_z = (center[2] - pos[2]) / 2
+            dist_x = (center[0] - pos[0]) * self.clump_amount
+            dist_y = (center[1] - pos[1]) * self.clump_amount
+            dist_z = (center[2] - pos[2]) * self.clump_amount
             cmds.xform(instances[idx], objectSpace=True, relative=True,
                        translation=(dist_x, dist_y, dist_z))
             idx = idx + 1
