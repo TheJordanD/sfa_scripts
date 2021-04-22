@@ -85,8 +85,7 @@ class ScatterUI(QtWidgets.QDialog):
     @QtCore.Slot()
     def _perform_scatter(self):
         self._set_scatterer_properties_from_ui()
-        # self.scatterer.perform_scatter()
-        self.scatterer.clump_scatter()
+        self.scatterer.perform_scatter()
 
     def _create_selection_ui(self):
         self.source_btn = QtWidgets.QPushButton("Select Source")
@@ -273,6 +272,8 @@ class Scatterer(object):
             log.critical("else: Select a single object or multiple vertices")
 
     def perform_scatter(self):
+        instances = []
+        pos_list = []
         percentage_destination = []
         for idx in range(0, len(self.destination_verts)):
             rand.seed(idx)
@@ -287,35 +288,16 @@ class Scatterer(object):
             cmds.xform(new_instance, translation=position)
 
             if self.align_to_normal:
-                constraint = cmds.normalConstraint(vert, new_instance, aimVector=[0, 1, 0])
+                constraint = cmds.normalConstraint(vert, new_instance,
+                                                   aimVector=[0, 1, 0])
                 cmds.delete(constraint)
-
             cmds.xform(new_instance, objectSpace=True, relative=True,
                        rotation=(self.rot_x, self.rot_y, self.rot_z),
                        scale=(self.scale_x, self.scale_y, self.scale_z))
-
-    def clump_scatter(self):
-        instances = []
-        pos_list = []
-
-        percentage_destination = []
-        for idx in range(0, len(self.destination_verts)):
-            rand.seed(idx)
-            rand_value = rand.random()
-            if rand_value <= self.percentage:
-                percentage_destination.append(self.destination_verts[idx])
-
-        for vert in percentage_destination:
-            self.randomize()
-            new_instance = cmds.instance(self.source_object)
-            position = cmds.pointPosition(vert, world=True)
-            cmds.xform(new_instance, translation=position)
-
             instances.append(new_instance)
 
         count = len(instances)
         sums = [0, 0, 0]
-
         for item in instances:
             pos = cmds.xform(item, q=True, t=True)
             pos_list.append(pos)
@@ -330,5 +312,6 @@ class Scatterer(object):
             dist_x = (center[0] - pos[0]) / 2
             dist_y = (center[1] - pos[1]) / 2
             dist_z = (center[2] - pos[2]) / 2
-            cmds.xform(instances[idx], objectSpace=True, relative=True, translation=(dist_x, dist_y, dist_z))
+            cmds.xform(instances[idx], objectSpace=True, relative=True,
+                       translation=(dist_x, dist_y, dist_z))
             idx = idx + 1
